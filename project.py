@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 from flask import session as login_session
 import random
 import string
@@ -110,6 +110,7 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -121,9 +122,8 @@ def gconnect():
     print "done!"
     return output
 
-    # DISCONNECT - Revoke a current user's token and reset their login_session
 
-
+# DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -185,6 +185,7 @@ def showRestaurants():
     restaurants = session.query(Restaurant).order_by(asc(Restaurant.name))
     return render_template('restaurants.html', restaurants=restaurants)
 
+
 # Create a new restaurant
 @app.route('/restaurant/new/', methods=['GET', 'POST'])
 def newRestaurant():
@@ -201,9 +202,8 @@ def newRestaurant():
     else:
         return render_template('newRestaurant.html')
 
+
 # Edit a restaurant
-
-
 @app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
     DBSession = sessionmaker(bind=engine)
@@ -238,9 +238,8 @@ def deleteRestaurant(restaurant_id):
     else:
         return render_template('deleteRestaurant.html', restaurant=restaurantToDelete)
 
+
 # Show a restaurant menu
-
-
 @app.route('/restaurant/<int:restaurant_id>/')
 @app.route('/restaurant/<int:restaurant_id>/menu/')
 def showMenu(restaurant_id):
